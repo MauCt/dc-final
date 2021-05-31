@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -118,7 +117,7 @@ func uploadImage(c *gin.Context) {
 	}
 
 	if exist {
-		filename := header.
+		filename := header.Filename
 		fileSize := header.Size
 
 		imageOut, err := os.Create("copy" + filename)
@@ -144,7 +143,8 @@ func uploadImage(c *gin.Context) {
 		})
 	}
 }
-func WorkloadCreation(c *gin.Context) {
+
+/*func WorkloadCreation(c *gin.Context) {
 	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
@@ -194,7 +194,7 @@ func getInfoWorkload(c *gin.Context) {
 
 func downloadImage(c *gin.Context) {
 
-}
+}*/
 
 func Start() {
 	r := gin.Default()
