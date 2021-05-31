@@ -101,21 +101,40 @@ func getStatus(c *gin.Context) {
 	}
 }
 
+/*func CreateWorkload(c *gin.Context){
+	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+	tokenKey := loginAuth[1]
+	_, exist := users[tokenKey]
+	if exist {
+		workloadName := c.PostForm("workload_name")
+		filter :=c.PostForm("filter")
+
+
+
+		c.JSON(200, gin.H{
+			"message": "Hi " + name + ", the DPIP System is Up and Running",
+			"time":    time.Now(),
+		})
+
+	} else {
+		c.JSON(200, gin.H{
+			"message": "Invalid token",
+		})
+	}
+}*/
+
 //Validates if the user exist using the token key and if the user exists it uploads the test.jpg image to the same folder.
 /*func uploadImage(c *gin.Context) {
 	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
-
 	file, header, err := c.Request.FormFile("data")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	if exist {
 		filename := header.Filename
 		fileSize := header.Size
-
 		imageOut, err := os.Create("copy" + filename)
 		if err != nil {
 			log.Fatal(err)
@@ -132,7 +151,6 @@ func getStatus(c *gin.Context) {
 			"filename": filename,
 			"size":     str + "kb",
 		})
-
 	} else {
 		c.JSON(200, gin.H{
 			"message": "Invalid token",
@@ -140,10 +158,10 @@ func getStatus(c *gin.Context) {
 	}
 }*/
 
-func main() {
+func Start() {
 	r := gin.Default()
-	r.GET("/login", login)
-	r.GET("/logout", Logout)
+	r.POST("/login", login)
+	r.DELETE("/logout", Logout)
 	r.GET("/status", getStatus)
 
 	r.Run()

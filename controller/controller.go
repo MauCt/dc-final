@@ -13,12 +13,6 @@ import (
 	_ "go.nanomsg.org/mangos/transport/all"
 )
 
-type Workers struct {
-	User     string
-	Password string
-	Token    string
-}
-
 var controllerAddress = "tcp://localhost:40899"
 
 func die(format string, v ...interface{}) {

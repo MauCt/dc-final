@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 
-	pb "github.com/MauCt/dc-final/proto"
+	pb "github.com/CodersSquad/dc-final/proto"
 	"go.nanomsg.org/mangos"
 	"go.nanomsg.org/mangos/protocol/sub"
 	"google.golang.org/grpc"
@@ -30,11 +30,6 @@ var (
 	controllerAddress = ""
 	workerName        = ""
 	tags              = ""
-	status            = ""
-	workDone          = 0
-	usage             = 0
-	port              = 0
-	jobsDone          = 0
 )
 
 func die(format string, v ...interface{}) {
@@ -45,11 +40,7 @@ func die(format string, v ...interface{}) {
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("RPC: Received: %v", in.GetName())
-	workDone += 1
-	log.Printf("[Worker] %+v: calling", workerName)
-	usage += 1
-	status = "Running"
-	return &pb.HelloReply{Message: "Hello " + workerName}, nil
+	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
 func init() {
