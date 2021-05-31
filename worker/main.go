@@ -81,10 +81,6 @@ func joinCluster() {
 		if msg, err = sock.Recv(); err != nil {
 			die("Cannot recv: %s", err.Error())
 		}
-		info := fmt.Sprintf("%v %v %v %v %v %v", workerName, status, usage, tags, defaultRPCPort, jobsDone)
-		if err = sock.Send([]byte(info)); err != nil {
-			die("Cannot send: %s", err.Error())
-		}
 		log.Printf("Message-Passing: Worker(%s): Received %s\n", workerName, string(msg))
 	}
 }
