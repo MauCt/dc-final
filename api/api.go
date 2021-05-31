@@ -91,11 +91,11 @@ func getStatus(c *gin.Context) {
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
 	if exist {
+		name := users[tokenKey].User
 
 		c.JSON(200, gin.H{
-			"system_name":      "Distributed Systems Class - Final Challenge",
-			"time":             time.Now(),
-			"active_workloads": "to be implemented",
+			"message": "Hi " + name + ", the DPIP System is Up and Running",
+			"time":    time.Now(),
 		})
 
 	} else {
@@ -144,62 +144,10 @@ func uploadImage(c *gin.Context) {
 	}
 }
 
-/*func WorkloadCreation(c *gin.Context) {
-	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
-	tokenKey := loginAuth[1]
-	_, exist := users[tokenKey]
-	if exist {
-		filter := c.Request.FormValue("filter")
-		workloadName := c.Request.FormValue("workload_name")
-		if filter == "grayscale" || filter == "blur" {
-			c.JSON(http.StatusOK, gin.H{
-				"workload_id":     "",
-				"filter":          filter,
-				"workload_name":   workloadName,
-				"status":          "scheduling, running, completed",
-				"running_jobs":    0,
-				"filtered_images": "",
-			})
-		} else {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": false, "message": "Filter not supported"})
-		}
-
-	} else {
-		c.JSON(200, gin.H{
-			"message": "Invalid token",
-		})
-	}
-}
-func getInfoWorkload(c *gin.Context) {
-	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
-	workloadID := loginAuth[1]
-	_, exist := users[workloadID]
-	if exist {
-
-		c.JSON(http.StatusOK, gin.H{
-			"workload_id":     workloadID,
-			"filter":          "",
-			"workload_name":   "",
-			"status":          "scheduling, running, completed",
-			"running_jobs":    0,
-			"filtered_images": "",
-		})
-
-	} else {
-		c.JSON(200, gin.H{
-			"message": "Invalid token",
-		})
-	}
-}
-
-func downloadImage(c *gin.Context) {
-
-}*/
-
-func Start() {
+func main() {
 	r := gin.Default()
-	r.POST("/login", login)
-	r.DELETE("/logout", Logout)
+	r.GET("/login", login)
+	r.GET("/logout", Logout)
 	r.GET("/status", getStatus)
 	r.POST("/upload", uploadImage)
 
