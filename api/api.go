@@ -2,9 +2,12 @@ package api
 
 import (
 	"encoding/base64"
+	"fmt"
+	"os"
 	"strings"
 	"time"
 
+	"github.com/MauCt/dc-final/controller"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +23,7 @@ var users = make(map[string]userData)
 
 //Login function that takes the parameters and decode them to have the username and password.
 //Validates if the user is already created.
+
 func login(c *gin.Context) {
 
 	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
@@ -87,11 +91,11 @@ func getStatus(c *gin.Context) {
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
 	if exist {
-		name := users[tokenKey].User
 
 		c.JSON(200, gin.H{
-			"message": "Hi " + name + ", the DPIP System is Up and Running",
-			"time":    time.Now(),
+			"System Name": "Distributed Systems Class",
+			"time":        time.Now(),
+			"Workloads":   len(controller.Workloads),
 		})
 
 	} else {
@@ -101,27 +105,67 @@ func getStatus(c *gin.Context) {
 	}
 }
 
-/*func CreateWorkload(c *gin.Context){
+func CreateWorkload(c *gin.Context) {
 	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
 	if exist {
-		workloadName := c.PostForm("workload_name")
-		filter :=c.PostForm("filter")
+		workloadName := fmt.Sprintf("%v", len(controller.Workloads))
+		filter := c.PostForm("filter")
 
+		workloadFolder := "images/" + fmt.Sprintf("%v", len(controller.Workloads)) + "/"
+		_ = os.MkdirAll(workloadFolder, 0755)
 
+		newWL := controller.Workload{
+			Id:       fmt.Sprintf("%v", len(controller.Workloads)),
+			Filter:   filter,
+			Name:     workloadName,
+			Status:   "scheduling",
+			Jobs:     0,
+			Imgs:     []string{},
+			Filtered: []string{},
+		}
+
+		controller.Workloads[fmt.Sprintf("%v", newWL.Id)] = newWL
 
 		c.JSON(200, gin.H{
-			"message": "Hi " + name + ", the DPIP System is Up and Running",
-			"time":    time.Now(),
+			"workload_id":     newWL.Id,
+			"filter":          newWL.Filter,
+			"workload_name":   newWL.Name,
+			"status":          newWL.Status,
+			"running_jobs":    newWL.Jobs,
+			"filtered_images": []string{},
 		})
-
 	} else {
 		c.JSON(200, gin.H{
 			"message": "Invalid token",
 		})
 	}
-}*/
+}
+
+func getWorkloads(c *gin.Context) {
+	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+	tokenKey := loginAuth[1]
+	workload_id := c.Param("workload_id")
+	_, exist := users[tokenKey]
+	if exist {
+
+		tempWorkload := controller.Workloads[workload_id]
+
+		c.JSON(200, gin.H{
+			"workload_id":     tempWorkload.Id,
+			"filter":          tempWorkload.Filter,
+			"workload_name":   tempWorkload.Name,
+			"status":          tempWorkload.Status,
+			"running_jobs":    tempWorkload.Jobs,
+			"filtered_images": controller.Workloads[workload_id].Filtered,
+		})
+	} else {
+		c.JSON(200, gin.H{
+			"message": "Invalid token",
+		})
+	}
+}
 
 //Validates if the user exist using the token key and if the user exists it uploads the test.jpg image to the same folder.
 /*func uploadImage(c *gin.Context) {
@@ -163,7 +207,8 @@ func Start() {
 	r.POST("/login", login)
 	r.DELETE("/logout", Logout)
 	r.GET("/status", getStatus)
-
+	r.POST("/workloads", CreateWorkload)
+	r.GET("/workloads/:workload_id", getWorkloads)
 	r.Run()
 
 }

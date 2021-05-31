@@ -14,6 +14,18 @@ import (
 )
 
 var controllerAddress = "tcp://localhost:40899"
+var sock mangos.Socket
+var Workloads = make(map[string]Workload)
+
+type Workload struct {
+	Id       string
+	Filter   string
+	Name     string
+	Status   string
+	Jobs     int
+	Imgs     []string
+	Filtered []string
+}
 
 func die(format string, v ...interface{}) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf(format, v...))
@@ -22,6 +34,9 @@ func die(format string, v ...interface{}) {
 
 func date() string {
 	return time.Now().Format(time.ANSIC)
+}
+func GetWorkloadName(key string) string {
+	return Workloads[key].Name
 }
 
 func Start() {
