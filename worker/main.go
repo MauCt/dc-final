@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 
-	pb "github.com/CodersSquad/dc-final/proto"
+	pb "github.com/MauCt/dc-final/proto"
 	"go.nanomsg.org/mangos"
 	"go.nanomsg.org/mangos/protocol/sub"
 	"google.golang.org/grpc"
@@ -30,6 +30,11 @@ var (
 	controllerAddress = ""
 	workerName        = ""
 	tags              = ""
+	status            = ""
+	workDone          = 0
+	usage             = 0
+	port              = 0
+	jobsDone          = 0
 )
 
 func die(format string, v ...interface{}) {
@@ -40,7 +45,11 @@ func die(format string, v ...interface{}) {
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("RPC: Received: %v", in.GetName())
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+	workDone += 1
+	log.Printf("[Worker] %+v: calling", workerName)
+	usage += 1
+	status = "Running"
+	return &pb.HelloReply{Message: "Hello " + workerName}, nil
 }
 
 func init() {
@@ -71,6 +80,10 @@ func joinCluster() {
 	for {
 		if msg, err = sock.Recv(); err != nil {
 			die("Cannot recv: %s", err.Error())
+		}
+		info := fmt.Sprintf("%v %v %v %v %v %v", workerName, status, usage, tags, defaultRPCPort, jobsDone)
+		if err = sock.Send([]byte(info)); err != nil {
+			die("Cannot send: %s", err.Error())
 		}
 		log.Printf("Message-Passing: Worker(%s): Received %s\n", workerName, string(msg))
 	}
