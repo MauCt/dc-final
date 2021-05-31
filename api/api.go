@@ -2,10 +2,6 @@ package api
 
 import (
 	"encoding/base64"
-	"io"
-	"log"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -106,7 +102,7 @@ func getStatus(c *gin.Context) {
 }
 
 //Validates if the user exist using the token key and if the user exists it uploads the test.jpg image to the same folder.
-func uploadImage(c *gin.Context) {
+/*func uploadImage(c *gin.Context) {
 	loginAuth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 	tokenKey := loginAuth[1]
 	_, exist := users[tokenKey]
@@ -142,14 +138,13 @@ func uploadImage(c *gin.Context) {
 			"message": "Invalid token",
 		})
 	}
-}
+}*/
 
 func main() {
 	r := gin.Default()
 	r.GET("/login", login)
 	r.GET("/logout", Logout)
 	r.GET("/status", getStatus)
-	r.POST("/upload", uploadImage)
 
 	r.Run()
 
