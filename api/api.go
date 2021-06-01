@@ -33,7 +33,6 @@ func login(c *gin.Context) {
 	name := l2[0]
 	password := l2[1]
 	isBusy := false
-	//Checks if the user exist
 	for i, _ := range users {
 		if users[i].User == name {
 			isBusy = true
@@ -41,7 +40,6 @@ func login(c *gin.Context) {
 	}
 
 	if isBusy || name == "" {
-		//print error
 		c.JSON(200, gin.H{
 			"message": "Username already taken",
 		})
@@ -52,7 +50,6 @@ func login(c *gin.Context) {
 			Password: password,
 			Token:    tokenNumber,
 		}
-		//print correct
 		c.JSON(200, gin.H{
 			"message": "Hi " + name + ", welcome to the DPIP System",
 			"token":   tokenNumber,
@@ -70,7 +67,6 @@ func Logout(c *gin.Context) {
 
 	if exist {
 		name := users[tokenKey].User
-		//print
 
 		c.JSON(200, gin.H{
 			"message": "Bye " + name + ", your token has been revoked",
@@ -78,7 +74,6 @@ func Logout(c *gin.Context) {
 
 		delete(users, tokenKey)
 	} else {
-		//print error
 		c.JSON(200, gin.H{
 			"message": "Invalid token",
 		})
@@ -153,7 +148,7 @@ func getWorkloads(c *gin.Context) {
 		tempWorkload := controller.Workloads[workload_id]
 
 		c.JSON(200, gin.H{
-			"workload_id":     tempWorkload.Id,
+			"workload_id":     tempWorkload.Id + "\n",
 			"filter":          tempWorkload.Filter,
 			"workload_name":   tempWorkload.Name,
 			"status":          tempWorkload.Status,
@@ -212,10 +207,3 @@ func Start() {
 	r.Run()
 
 }
-
-/*Links of the codes and information we use to make this project:
-https://github.com/gin-gonic/gin
-https://www.youtube.com/watch?v=RkmvVFZJJvs
-https://gist.github.com/schollz/f25d77afc9130b72390748bdbce0d9a3
-https://github.com/vaksi/go_auth_api
-*/

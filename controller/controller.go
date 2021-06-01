@@ -35,9 +35,6 @@ func die(format string, v ...interface{}) {
 func date() string {
 	return time.Now().Format(time.ANSIC)
 }
-func GetWorkloadName(key string) string {
-	return Workloads[key].Name
-}
 
 func Start() {
 	var sock mangos.Socket
